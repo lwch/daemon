@@ -49,7 +49,8 @@ func run(ch chan struct{}, pid, username string, arg ...string) {
 		}
 		cmd.SysProcAttr = &syscall.SysProcAttr{
 			Credential: &syscall.Credential{
-				Uid: uid,
+				Uid: u.Uid,
+				Gid: u.Gid,
 			},
 		}
 	}
