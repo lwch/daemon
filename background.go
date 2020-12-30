@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"os/user"
+	"strconv"
 	"syscall"
 )
 
@@ -47,10 +48,12 @@ func run(ch chan struct{}, pid, username string, arg ...string) {
 			fmt.Println("user not found")
 			os.Exit(1)
 		}
+		uid, _ := strconv.ParseUint(u.Uid, 10, 32)
+		gid, _ := strconv.ParseUint(u.Gid, 10, 32)
 		cmd.SysProcAttr = &syscall.SysProcAttr{
 			Credential: &syscall.Credential{
-				Uid: u.Uid,
-				Gid: u.Gid,
+				Uid: uint32(uid),
+				Gid: uint32(gid),
 			},
 		}
 	}
