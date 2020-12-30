@@ -38,7 +38,6 @@ func run(ch chan struct{}, pid string, arg ...string) {
 		if len(pid) > 0 {
 			writePidFile(pid, cmd.Process.Pid)
 		}
-		cmd.Process.Release()
 		cmd.Wait()
 		ch <- struct{}{}
 	} else {
