@@ -41,7 +41,7 @@ func run(ch chan struct{}, pid, username string, arg ...string) {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
-	if len(user) > 0 {
+	if len(username) > 0 {
 		u, err := user.Lookup(username)
 		if err != nil {
 			fmt.Println("user not found")
