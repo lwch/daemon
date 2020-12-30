@@ -1,3 +1,3 @@
-module gitee.com/lwch/background
+module gitee.com/lwch/daemon
 
 go 1.15

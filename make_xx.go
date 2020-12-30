@@ -1,6 +1,6 @@
 // +build !windows
 
-package background
+package daemon
 
 import (
 	"fmt"
