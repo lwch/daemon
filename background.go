@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"sync"
 	"syscall"
 )
 
@@ -15,10 +16,13 @@ var cmd *exec.Cmd
 func Start(pid, username string, arg ...string) {
 	chExit := make(chan struct{})
 	onExit := false
+	var wg sync.WaitGroup
 	if len(pid) > 0 {
 		c := make(chan os.Signal)
 		signal.Notify(c, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+		wg.Add(1)
 		go func() {
+			defer wg.Done()
 			sig := <-c
 			onExit = true
 			cmd.Process.Signal(sig)
@@ -30,9 +34,10 @@ func Start(pid, username string, arg ...string) {
 	for {
 		run(chExit, pid, username, arg...)
 		if onExit {
-			return
+			break
 		}
 	}
+	wg.Wait()
 }
 
 func run(ch chan struct{}, pid, username string, arg ...string) {
