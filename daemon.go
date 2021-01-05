@@ -45,7 +45,10 @@ func run(ch chan struct{}, pid, username string, arg ...string) {
 	if err := cmd.Start(); err == nil {
 		writePidFile(pid, os.Getpid())
 		cmd.Wait()
-		ch <- struct{}{}
+		select {
+		case ch <- struct{}{}:
+		default:
+		}
 	} else {
 		fmt.Println("create child process failed")
 		os.Exit(1)
