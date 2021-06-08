@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"sync"
 	"syscall"
+	"time"
 )
 
 var cmd *exec.Cmd
@@ -31,10 +32,17 @@ func Start(pid, username string, arg ...string) {
 			os.Exit(0)
 		}()
 	}
+	sleep := time.Second
+	const max = 30 * time.Second
 	for {
 		run(chExit, pid, username, arg...)
 		if onExit {
 			break
+		}
+		time.Sleep(sleep)
+		sleep <<= 1
+		if sleep > max {
+			sleep = max
 		}
 	}
 	wg.Wait()
