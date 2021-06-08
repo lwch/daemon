@@ -14,7 +14,7 @@ import (
 var cmd *exec.Cmd
 
 // Start start daemon
-func Start(allowShortExit int, pid, username string, arg ...string) {
+func Start(exit int, pid, username string, arg ...string) {
 	chExit := make(chan struct{})
 	onExit := false
 	var wg sync.WaitGroup
@@ -32,21 +32,19 @@ func Start(allowShortExit int, pid, username string, arg ...string) {
 			os.Exit(0)
 		}()
 	}
-	var shortExit int
+	var cnt int
 	for {
 		begin := time.Now()
 		run(chExit, pid, username, arg...)
 		if onExit {
 			break
 		}
-		if time.Since(begin).Seconds() < 3 {
-			shortExit++
-			if allowShortExit > 0 && shortExit > allowShortExit {
-				fmt.Println("short exit")
-				break
-			}
-		} else {
-			shortExit = 0
+		if time.Since(begin).Minutes() > 10 {
+			cnt = 0
+		}
+		cnt++
+		if exit > 0 && cnt > exit {
+			break
 		}
 	}
 	wg.Wait()
