@@ -33,7 +33,6 @@ func Start(pid, username string, arg ...string) {
 		}()
 	}
 	sleep := time.Second
-	const max = 30 * time.Second
 	for {
 		run(chExit, pid, username, arg...)
 		if onExit {
@@ -41,8 +40,8 @@ func Start(pid, username string, arg ...string) {
 		}
 		time.Sleep(sleep)
 		sleep <<= 1
-		if sleep > max {
-			sleep = max
+		if sleep > 30*time.Second {
+			sleep = time.Second
 		}
 	}
 	wg.Wait()
